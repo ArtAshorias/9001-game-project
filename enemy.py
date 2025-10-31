@@ -1,97 +1,78 @@
-# ================================
+# =============================
 # enemy.py
-# 敌人类模块（两种类型 + 属性随机波动）
-# ================================
+# 敌人类与战斗事件生成逻辑
+# =============================
 
+# enemy.py
 import random
-import time
 
 
 class Enemy:
-    def __init__(self, name, enemy_type, Atk, Def, HP, crit, dodge, skill):
+    def __init__(self, name, atk, hp, df, crit=0.0, dodge=0.0, exp=10, is_boss=False):
         self.name = name
-        self.enemy_type = enemy_type
-        self.Atk = Atk
-        self.Def = Def
-        self.HP = HP
+        self.Atk = atk
+        self.HP = hp
+        self.MaxHP = hp
+        self.Def = df
         self.crit = crit
         self.dodge = dodge
-        self.skill = skill
+        self.exp = exp
+        self.is_boss = is_boss
+        self.buffs = []
+
+    def is_alive(self):
+        return self.HP > 0
+
+    def end_round(self):
+        if not self.buffs: return
+        remaining = []
+        for buff in self.buffs:
+            # 简化：这里只更新持续回合，忽略DoT以保证流程稳定
+            if buff.tick():
+                remaining.append(buff)
+        self.buffs = remaining
 
     def show_info(self):
-        print("\n=== Enemy Info ===")
+        print(f"\n=== Enemy Info ===")
         print(f"Name: {self.name}")
-        print(f"Type: {self.enemy_type}")
-        print(f"ATK: {self.Atk}")
-        print(f"DEF: {self.Def}")
-        print(f"HP: {self.HP}")
-        print(f"Crit Rate: {self.crit:.2f}")
-        print(f"Dodge Rate: {self.dodge:.2f}")
-        print(f"Skill: {self.skill}")
-        print("====================")
+        print(f"HP: {self.HP}/{self.MaxHP} | ATK: {self.Atk} | DEF: {self.Def}")
+        print(f"Crit: {self.crit:.2f} | Dodge: {self.dodge:.2f}")
+        print("===================")
 
-
-# 固定模板：只存在两种敌人
 ENEMY_TEMPLATES = {
-    "Slime": {
-        "base_name": "Slime",
-        "base_Atk": 5,
-        "base_Def": 3,
-        "base_HP": 50,
-        "base_crit": 0,
-        "base_dodge": 0,
-        "skill": "",
-    },
-    "Goblin": {
-        "base_name": "Goblin",
-        "base_Atk": 8,
-        "base_Def": 4,
-        "base_HP": 70,
-        "base_crit": 0.1,
-        "base_dodge": 0.05,
-        "skill": "",
-    },
+    "史莱姆": {"atk": (4, 8), "hp": (50, 80), "df": (2, 5), "crit": 0.0, "dodge": 0.0, "exp": 10},
+    "哥布林": {"atk": (8, 12), "hp": (80, 120), "df": (4, 8), "crit": 0.05, "dodge": 0.05, "exp": 15},
+    "巨龙": {"atk": (20, 35), "hp": (350, 400), "df": (12, 16), "crit": 0.1, "dodge": 0.05, "exp": 100, "is_boss": True},
+    "魔王": {"atk": (45, 50), "hp": (800, 800), "df": (20, 22), "crit": 0.15, "dodge": 0.1, "exp": 999, "is_boss": True},
 }
 
-
-def generate_random_enemy():
-    """从两种模板中随机生成一个敌人，并随机化属性"""
-    print("\nA wild enemy appears...")
-    time.sleep(1.2)
-
-    # 1. 随机选择敌人类型（Slime or Goblin）
-    enemy_type = random.choice(list(ENEMY_TEMPLATES.keys()))
-    template = ENEMY_TEMPLATES[enemy_type]
-
-    # 2. 为每个属性添加轻微随机浮动（±20%）
-    def randomize(value, variation=0.1):
-        """基础属性 ±20% 波动"""
-        delta = value * variation
-        return int(random.uniform(value - delta, value + delta))
-
-    Atk = randomize(template["base_Atk"])
-    Def = randomize(template["base_Def"])
-    HP = randomize(template["base_HP"])
-
-    # 3. 直接使用模板中的固定值
-    crit = template["crit"]
-    dodge = template["dodge"]
-    name = template["name"]
-    skill = template["skill"]
-
-    # 4. 创建敌人对象
-    e = Enemy(
+def create_enemy(name):
+    data = ENEMY_TEMPLATES[name]
+    enemy = Enemy(
         name=name,
-        enemy_type=enemy_type,
-        Atk=Atk,
-        Def=Def,
-        HP=HP,
-        crit=crit,
-        dodge=dodge,
-        skill=template["skill"],
+        atk=random.randint(*data["atk"]),
+        hp=random.randint(*data["hp"]),
+        df=random.randint(*data["df"]),
+        crit=data["crit"], dodge=data["dodge"], exp=data["exp"],
+        is_boss=data.get("is_boss", False)
     )
+    enemy.show_info()
+    return enemy
 
-    # 5. 输出结果
-    print(f"\nYou have encountered a {e.name}!")
-    e.show_info()
-    return e
+def generate_event(step, player):
+    if step in (14, 19):
+        print("\n=== 你来到了休息室 ===")
+        player.HP = player.MaxHP
+        print(f"{player.name} 的生命值恢复至 {player.HP}/{player.MaxHP}。")
+        return None
+    elif step == 15:
+        print("\n=== Boss 战：巨龙 ===")
+        return create_enemy("巨龙")
+    elif step == 20:
+        print("\n=== 最终战：魔王 ===")
+        return create_enemy("魔王")
+    else:
+        name = random.choice(["史莱姆", "哥布林"])
+        e = create_enemy(name)
+        return e
+
