@@ -57,33 +57,32 @@ class Skill:
 # ==================================================
 SKILL_BOOKS = [
     # 造成 1.5 倍攻击伤害（单段）
-    {"name": "Fireball", "desc": "造成1.5倍攻击力的伤害",
+    {"name": "Fireball", "desc": "Deals 1.5x attack damage.",
      "mp_cost": 5, "mode": "damage", "scale": "mult", "value": 1.5, "hits": 1},
 
     # 三连击：每次 0.6 倍攻击
-    {"name": "Triple Strike", "desc": "连续攻击三次，每次造成0.6倍攻击伤害",
+    {"name": "Triple Strike", "desc": "Performs three consecutive attacks, each dealing 0.6x attack damage.",
      "mp_cost": 5, "mode": "damage", "scale": "mult", "value": 0.6, "hits": 3},
 
     # 爆燃：3 倍攻击（单段）
-    {"name": "Flame Burst", "desc": "造成3倍攻击伤害",
+    {"name": "Flame Burst", "desc": "Deals 3x attack damage.",
      "mp_cost": 10, "mode": "damage", "scale": "mult", "value": 3.0, "hits": 1},
 
     # 陨石：5 倍攻击（单段）
-    {"name": "Meteor", "desc": "造成5倍攻击伤害",
+    {"name": "Meteor", "desc": "Deals 5x attack damage.",
      "mp_cost": 10, "mode": "damage", "scale": "mult", "value": 5.0, "hits": 1},
 
     # 处决：随机 3 倍或 5 倍（单段）
-    {"name": "Fatal Strike", "desc": "随机造成3或5倍伤害",
+    {"name": "Fatal Strike", "desc": "Randomly deals 3x or 5x damage.",
      "mp_cost": 10, "mode": "damage", "scale": "mult", "value": [3.0, 5.0], "hits": 1},
 
     # 流剑：4 倍攻击（单段）
-    {"name": "Flow Sword", "desc": "造成4倍伤害",
+    {"name": "Flow Sword", "desc": "Performs ten consecutive attacks, each dealing 0.6x attack damage.",
      "mp_cost": 10, "mode": "damage", "scale": "mult", "value": 0.6, "hits": 10},
 
 ]
 
 def create_skill_from_book(book: dict) -> Skill:
-    """把技能书原型转为真正可用的 Skill 实例"""
     return Skill(
         name=book["name"],
         desc=book["desc"],

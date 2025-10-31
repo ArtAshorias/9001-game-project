@@ -16,7 +16,7 @@ def show_menu():
     return input("\nPlease enter your choice: ").strip()
 
 def create_hidden_adam():
-    print("\n⚙️ 启动隐藏角色：Artorias（测试模式）")
+    print("\n⚙️ Start Hidden Character：Artorias（Test Type）")
     time.sleep(1)
     return Player(
         name="Artorias", Profession="Debugger",
@@ -25,37 +25,37 @@ def create_hidden_adam():
     )
 
 def main():
-    print("\n=== 欢迎进入地下城冒险游戏 ===")
-    print("提示：输入 'adam' 可进入隐藏测试模式。")
+    print("\n=== Welcome to the Dungeon Adventure Game ===")
+    print("Tip: Enter ‘Artorias’ to enter hidden test mode.")
 
     while True:
         c = show_menu()
         if c == "1":
             # 玩家输入角色名
-            name_input = input("\n请输入角色名（或输入 Artorias 激活隐藏角色）：").strip()
+            name_input = input("\nPlease enter your character name (or enter Artorias to unlock the hidden character).：").strip()
 
             # 判断是否为隐藏角色
-            if name_input.lower() == "adam":
+            if name_input.lower() == "Artorias":
                 player = create_hidden_adam()
             else:
                 # 把玩家输入的名字传入创建函数
                 player = create_player(name=name_input if name_input else "Nameless")
 
             if player:
-                print(f"\n角色 {player.name} 创建成功！")
-                print("冒险即将开始，请做好准备……")
+                print(f"\nRole {player.name} Creation successful!")
+                print("The adventure is about to begin. Get ready.……")
                 time.sleep(1.0)
                 battle = Battle(player)
                 battle.start_dungeon()
-                print("\n游戏结束，正在保存冒险记录……")
+                print("\nGame over. Saving adventure log.……")
                 write_end_log(player)
-                print("存档完成，再见，勇者！")
+                print("Saving complete. Farewell, brave adventurer!")
                 break
         elif c == "2":
-            print("\n感谢游玩，再见。")
+            print("\nThanks for playing. See you later.。")
             break
         else:
-            print("\n输入无效，请重新输入。")
+            print("\nInvalid input. Please re-enter.")
 
 if __name__ == "__main__":
     main()

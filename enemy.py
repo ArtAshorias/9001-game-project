@@ -40,10 +40,10 @@ class Enemy:
         print("===================")
 
 ENEMY_TEMPLATES = {
-    "史莱姆": {"atk": (4, 8), "hp": (50, 80), "df": (2, 5), "crit": 0.0, "dodge": 0.0, "exp": 10},
-    "哥布林": {"atk": (8, 12), "hp": (80, 120), "df": (4, 8), "crit": 0.05, "dodge": 0.05, "exp": 15},
-    "巨龙": {"atk": (20, 35), "hp": (350, 400), "df": (12, 16), "crit": 0.1, "dodge": 0.05, "exp": 100, "is_boss": True},
-    "魔王": {"atk": (45, 50), "hp": (800, 800), "df": (20, 22), "crit": 0.15, "dodge": 0.1, "exp": 999, "is_boss": True},
+    "Slime": {"atk": (4, 8), "hp": (50, 80), "df": (2, 5), "crit": 0.0, "dodge": 0.0, "exp": 10},
+    "Goblin": {"atk": (8, 12), "hp": (80, 120), "df": (4, 8), "crit": 0.05, "dodge": 0.05, "exp": 15},
+    "Dragon": {"atk": (20, 35), "hp": (350, 400), "df": (12, 16), "crit": 0.1, "dodge": 0.05, "exp": 100, "is_boss": True},
+    "Demon King": {"atk": (45, 50), "hp": (800, 800), "df": (20, 22), "crit": 0.15, "dodge": 0.1, "exp": 999, "is_boss": True},
 }
 
 def create_enemy(name):
@@ -61,18 +61,18 @@ def create_enemy(name):
 
 def generate_event(step, player):
     if step in (14, 19):
-        print("\n=== 你来到了休息室 ===")
+        print("\n=== You have arrived at the rest room. ===")
         player.HP = player.MaxHP
-        print(f"{player.name} 的生命值恢复至 {player.HP}/{player.MaxHP}。")
+        print(f"{player.name} HP has been fully restored {player.HP}/{player.MaxHP}。")
         return None
     elif step == 15:
-        print("\n=== Boss 战：巨龙 ===")
-        return create_enemy("巨龙")
+        print("\n=== Boss Battle: Dragon ===")
+        return create_enemy("Dragon")
     elif step == 20:
-        print("\n=== 最终战：魔王 ===")
-        return create_enemy("魔王")
+        print("\n=== Final Battle: Demon King ===")
+        return create_enemy("Demon King")
     else:
-        name = random.choice(["史莱姆", "哥布林"])
+        name = random.choice(["Slime", "Goblin"])
         e = create_enemy(name)
         return e
 

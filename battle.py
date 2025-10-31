@@ -14,14 +14,14 @@ class Battle:
         self.max_steps = 20
 
     def start_dungeon(self):
-        print("\n=== 地下城冒险开始 ===")
-        print("你将探索20层，途中可能遇到战斗、宝箱或休息室。")
+        print("\n=== The dungeon adventure begins! ===")
+        print("You will explore 20 floors, encountering battles, treasure chests, or rest rooms along the way.")
 
         while self.player.steps < self.max_steps:
-            input("\n按下 Enter 继续前进...")
+            input("\nPress Enter to continue...")
             self.player.steps += 1
             step = self.player.steps
-            print(f"\n—— 当前层数：第 {step} 层 ——")
+            print(f"\n—— Current Floor: {step} ——")
 
             event_type = self.trigger_event(step)
 
@@ -31,7 +31,7 @@ class Battle:
             # 巨龙战
             if event_type == "dragon":
                 enemy = generate_event(15, self.player)
-                print("\n🔥 巨龙出现了！🔥")
+                print("\n🔥 The dragon has appeared!🔥")
                 self.battle(enemy, event_type="dragon")
                 if not self.player.is_alive(): break
                 if not enemy.is_alive(): apply_dragon_reward(self.player)
@@ -40,12 +40,12 @@ class Battle:
             # 魔王战
             if event_type == "boss":
                 enemy = generate_event(20, self.player)
-                print("\n👑 魔王出现！终极之战开始！👑")
+                print("\n👑 The Demon King has appeared! The ultimate battle begins!👑")
                 self.battle(enemy, event_type="final_boss")
                 if not self.player.is_alive():
-                    print("\n你倒下了……冒险结束。")
+                    print("\nYou have fallen... The adventure is over.")
                 else:
-                    print("\n=== 你击败了魔王！世界恢复了和平！ ===")
+                    print("\n=== You have defeated the Demon King! Peace has returned to the world! ===")
                 break
 
             if event_type == "chest":
@@ -53,11 +53,11 @@ class Battle:
 
             # 普通敌人
             enemy = generate_event(step, self.player)
-            print(f"\n遭遇敌人：{enemy.name}！")
+            print(f"\nAn enemy has appeared!：{enemy.name}！")
             self.battle(enemy)
             if not self.player.is_alive(): break
 
-        print("\n=== 地下城冒险结束 ===")
+        print("\n=== The dungeon adventure has ended. ===")
 
     def trigger_event(self, step):
         if step in (14, 19): return "rest"
@@ -66,27 +66,27 @@ class Battle:
         return "chest" if random.random() < 0.15 else "battle"
 
     def battle(self, enemy, event_type="battle"):
-        print("\n=== 战斗开始 ===")
-        print(f"{self.player.name} 初始 HP: {self.player.HP}/{self.player.MaxHP}")
-        print(f"{enemy.name} 初始 HP: {enemy.HP}/{enemy.MaxHP}")
+        print("\n=== The battle begins! ===")
+        print(f"{self.player.name} HP: {self.player.HP}/{self.player.MaxHP}")
+        print(f"{enemy.name} HP: {enemy.HP}/{enemy.MaxHP}")
 
         round_count = 1
         while self.player.is_alive() and enemy.is_alive():
-            print(f"\n—— 第 {round_count} 回合 ——")
+            print(f"\n—— Round {round_count}  ——")
             print(f"{self.player.name} HP: {self.player.HP}/{self.player.MaxHP} | {enemy.name} HP: {enemy.HP}/{enemy.MaxHP}")
-            print("\n请选择行动:\n1) 普通攻击\n2) 使用技能")
-            choice = input("请输入数字选择行动: ").strip()
+            print("\nChoice:\n1) Attack\n2) Skill")
+            choice = input("Please enter a number to choose your action: ").strip()
 
             if choice == "1":
                 self.normal_attack(enemy)
             elif choice == "2":
                 self.use_skill(enemy)
             else:
-                print("输入无效，请重新选择。")
+                print("Invalid input, please choose again.")
                 continue
 
             if not enemy.is_alive():
-                print(f"\n{enemy.name} 被击败！")
+                print(f"\n{enemy.name} Defeated!")
                 if event_type not in ["dragon", "final_boss"]:
                     self.obtain_loot()
                 break
@@ -94,73 +94,73 @@ class Battle:
             if enemy.is_alive():
                 self.enemy_attack(enemy)
 
-            print(f"\n回合结束：{self.player.name} HP {self.player.HP}/{self.player.MaxHP} | {enemy.name} HP {enemy.HP}/{enemy.MaxHP}")
+            print(f"\nTurn ended.：{self.player.name} HP {self.player.HP}/{self.player.MaxHP} | {enemy.name} HP {enemy.HP}/{enemy.MaxHP}")
             round_count += 1
 
     def normal_attack(self, enemy):
         damage = max(0, self.player.Atk - enemy.Def)
         enemy.HP -= damage
         if enemy.HP < 0: enemy.HP = 0
-        print(f"{self.player.name} 攻击了 {enemy.name}，造成 {damage} 点伤害！")
-        print(f"{enemy.name} 当前剩余 HP: {enemy.HP}/{enemy.MaxHP}")
+        print(f"{self.player.name} Attack {enemy.name}，Dealt {damage} of damage!")
+        print(f"{enemy.name} Current remaining HP: {enemy.HP}/{enemy.MaxHP}")
 
     def use_skill(self, enemy):
         if not self.player.skill:
-            print("你尚未掌握任何技能！"); return
-        print("\n=== 技能列表 ===")
+            print("You have not learned any skills yet！"); return
+        print("\n=== Skill List ===")
         for i, sk in enumerate(self.player.skill, 1):
-            print(f"{i}. {sk.name} - {sk.desc} (MP消耗: {sk.mp_cost})")
+            print(f"{i}. {sk.name} - {sk.desc} (MP Cost: {sk.mp_cost})")
         try:
-            idx = int(input("请选择技能编号: "))
+            idx = int(input("Please select a skill number: "))
             if 1 <= idx <= len(self.player.skill):
                 skill = self.player.skill[idx - 1]
                 if self.player.MP < skill.mp_cost:
-                    print("MP不足！"); return
+                    print("No MP！"); return
                 self.player.MP -= skill.mp_cost
                 skill.use(self.player, enemy)
             else:
-                print("无效选择。")
+                print("Invalid selection.")
         except ValueError:
-            print("请输入有效数字。")
+            print("Please enter a valid number.。")
 
     def enemy_attack(self, enemy):
         damage = max(0, enemy.Atk - self.player.Def)
         self.player.HP -= damage
         if self.player.HP < 0: self.player.HP = 0
-        print(f"{enemy.name} 攻击了 {self.player.name}，造成 {damage} 点伤害！")
-        print(f"{self.player.name} 当前剩余 HP: {self.player.HP}/{self.player.MaxHP}")
+        print(f"{enemy.name} Attack {self.player.name}，Dealt {damage} of damage!")
+        print(f"{self.player.name} Current remaining HP: {self.player.HP}/{self.player.MaxHP}")
 
     def treasure_room(self):
-        print("\n=== 宝箱房 ===")
+        print("\n=== Treasure Chest Room ===")
         loot_items = generate_loot(event_type="chest")
         for i, item in enumerate(loot_items, 1):
             print(f"{i}. {item['name']} - {item['desc']}")
         try:
-            choice = int(input("\n请选择要使用或装备的物品编号（或输入0跳过）："))
+            choice = int(input("\nPlease select the item number to use or equip (or enter 0 to skip): "))
             if choice != 0 and 1 <= choice <= len(loot_items):
                 loot_items[choice - 1]["effect"](self.player)
         except ValueError:
-            print("输入无效，跳过本次选择。")
+            print("Invalid input. Skipping this selection.。")
 
     def rest_room(self):
-        print("\n=== 休息房 ===")
+        print("\n=== Rest Room ===")
         old_hp = self.player.HP
         old_mp = self.player.MP
 
         self.player.HP = self.player.MaxHP
         self.player.MP = self.player.MaxMP
 
-        print(f"{self.player.name} 的生命值已完全恢复（{old_hp} → {self.player.HP}）！")
-        print(f"{self.player.name} 的生命值已完全恢复（{old_mp} → {self.player.MP}）！")
+        print(f"{self.player.name} HP has been fully restored（{old_hp} → {self.player.HP}）！")
+        print(f"{self.player.name} HP has been fully restored（{old_mp} → {self.player.MP}）！")
 
     def obtain_loot(self):
         loot_items = generate_loot(event_type="battle")
-        print("\n=== 战斗奖励 ===")
+        print("\n=== Battle Rewards ===")
         for i, item in enumerate(loot_items, 1):
             print(f"{i}. {item['name']} - {item['desc']}")
         try:
-            choice = int(input("\n请选择要使用或装备的物品编号（或输入0跳过）："))
+            choice = int(input("\nPlease select the item number to use or equip (or enter 0 to skip): "))
             if choice != 0 and 1 <= choice <= len(loot_items):
                 loot_items[choice - 1]["effect"](self.player)
         except ValueError:
-            print("输入无效，跳过奖励。")
+            print("Invalid input. Skipping rewards.")
