@@ -4,6 +4,10 @@
 # =============================
 
 # main.py
+
+
+
+
 from Player import create_player, Player
 from battle import Battle
 from tool import write_end_log
@@ -16,7 +20,7 @@ def show_menu():
     return input("\nPlease enter your choice: ").strip()
 
 def create_hidden_adam():
-    print("\n⚙️ Start Hidden Character：Artorias（Test Type）")
+    print("\n️ Start Hidden Character: Artorias(Test Type)")
     time.sleep(1)
     return Player(
         name="Artorias", Profession="Debugger",
@@ -26,16 +30,15 @@ def create_hidden_adam():
 
 def main():
     print("\n=== Welcome to the Dungeon Adventure Game ===")
-    print("Tip: Enter ‘Artorias’ to enter hidden test mode.")
 
     while True:
         c = show_menu()
         if c == "1":
             # 玩家输入角色名
-            name_input = input("\nPlease enter your character name (or enter Artorias to unlock the hidden character).：").strip()
+            name_input = input("\nPlease enter your character name :").strip()
 
             # 判断是否为隐藏角色
-            if name_input.lower() == "Artorias":
+            if name_input.lower() == "artorias":
                 player = create_hidden_adam()
             else:
                 # 把玩家输入的名字传入创建函数

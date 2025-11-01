@@ -8,6 +8,8 @@ import random
 from enemy import Enemy, generate_event
 from item import generate_loot, apply_dragon_reward
 
+
+
 class Battle:
     def __init__(self, player):
         self.player = player
@@ -31,7 +33,7 @@ class Battle:
             # 巨龙战
             if event_type == "dragon":
                 enemy = generate_event(15, self.player)
-                print("\n🔥 The dragon has appeared!🔥")
+                print("\n The dragon has appeared!")
                 self.battle(enemy, event_type="dragon")
                 if not self.player.is_alive(): break
                 if not enemy.is_alive(): apply_dragon_reward(self.player)
@@ -40,7 +42,7 @@ class Battle:
             # 魔王战
             if event_type == "boss":
                 enemy = generate_event(20, self.player)
-                print("\n👑 The Demon King has appeared! The ultimate battle begins!👑")
+                print("\n The Demon King has appeared! The ultimate battle begins!")
                 self.battle(enemy, event_type="final_boss")
                 if not self.player.is_alive():
                     print("\nYou have fallen... The adventure is over.")

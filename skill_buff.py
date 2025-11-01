@@ -29,7 +29,7 @@ class Skill:
         return self.value
 
     def use(self, player, enemy):
-        print(f"\n{player.name} 使用技能 [{self.name}]！")
+        print(f"\n{player.name} use [{self.name}]！")
 
         total_damage = 0
         for i in range(self.hits):
@@ -41,15 +41,15 @@ class Skill:
             if enemy.HP < 0:
                 enemy.HP = 0
             if self.hits > 1:
-                print(f"{self.name} 第{i + 1}击造成 {damage} 点伤害！")
+                print(f"{self.name} attack {i + 1} cause {damage} ！")
             if enemy.HP <= 0:
                 break
 
         if self.hits == 1:
-            print(f"{self.name} 对 {enemy.name} 造成了 {total_damage} 点伤害！")
+            print(f"{self.name} attack {enemy.name} cause {total_damage} ！")
         else:
-            print(f"{self.name} 总计造成 {total_damage} 点伤害！")
-        print(f"{enemy.name} 剩余 HP: {enemy.HP}/{enemy.MaxHP}")
+            print(f"{self.name} cause  {total_damage} ！")
+        print(f"{enemy.name} HP: {enemy.HP}/{enemy.MaxHP}")
 
 
 # ==================================================

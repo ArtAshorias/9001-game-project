@@ -51,12 +51,12 @@ available_skillbooks = [b.copy() for b in SKILL_BOOKS]
 def heal_player(player, amount):
     old_hp = player.HP
     player.HP = min(player.HP + amount, player.MaxHP)
-    print(f"{player.name} 使用生命药水，HP {old_hp} → {player.HP}")
+    print(f"{player.name} HP {old_hp} → {player.HP}")
 
 def restore_mp(player, amount):
     old_mp = player.MP
     player.MP = min(player.MP + amount, 100)
-    print(f"{player.name} 使用魔力药水，MP {old_mp} → {player.MP}")
+    print(f"{player.name} MP {old_mp} → {player.MP}")
 
 potions = [
     {"name": "Health Potion", "desc": "Restores 30 HP.", "effect": lambda p: heal_player(p, 30)},
