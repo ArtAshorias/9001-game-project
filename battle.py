@@ -14,6 +14,7 @@ class Battle:
     def __init__(self, player):
         self.player = player
         self.max_steps = 20
+        self.steps = 0
 
     def start_dungeon(self):
         print("\n=== The dungeon adventure begins! ===")

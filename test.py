@@ -8,32 +8,45 @@ import main  # 你的游戏逻辑
 class CanvasRedirector:
     def __init__(self, canvas):
         self.canvas = canvas
-        self.text_lines = []  # 保存所有文字行
-        self.max_lines = 28   # 最大显示行数（控制不超出窗口）
+        self.text_lines = []
         self.font = ("Consolas", 14, "bold")
         self.color = "white"
+        self.scroll_offset = 0   # 当前滚动偏移量
+        self.line_height = 22
+        self.visible_lines = 28  # 一屏显示行数
+
+        # 绑定鼠标滚轮事件
+        self.canvas.bind_all("<MouseWheel>", self.on_scroll)
+        self.canvas.bind_all("<Button-4>", self.on_scroll)  # Linux支持
+        self.canvas.bind_all("<Button-5>", self.on_scroll)
 
     def write(self, text):
         for line in text.split("\n"):
-            if line.strip():
-                self.text_lines.append(line)
-            else:
-                self.text_lines.append("")
-            # 超过窗口最大行时删除顶部
-            if len(self.text_lines) > self.max_lines:
-                self.text_lines.pop(0)
-        self.refresh_canvas()
+            self.text_lines.append(line)
+        self.refresh_canvas(auto_scroll=True)
 
-    def refresh_canvas(self):
+    def refresh_canvas(self, auto_scroll=False):
         self.canvas.delete("text")
+        total_lines = len(self.text_lines)
+        start = max(0, total_lines - self.visible_lines - self.scroll_offset)
+        end = start + self.visible_lines
+        visible = self.text_lines[start:end]
+
         y = 60
-        for line in self.text_lines:
+        for line in visible:
             self.canvas.create_text(
                 50, y, text=line, anchor="w", fill=self.color,
                 font=self.font, tags="text"
             )
-            y += 22
+            y += self.line_height
         self.canvas.update()
+
+    def on_scroll(self, event):
+        # event.delta 在 Windows 为 ±120，Linux 为 ±1
+        direction = 1 if event.delta > 0 else -1
+        self.scroll_offset += direction
+        self.scroll_offset = max(0, min(self.scroll_offset, max(0, len(self.text_lines) - self.visible_lines)))
+        self.refresh_canvas()
 
     def flush(self):
         pass
